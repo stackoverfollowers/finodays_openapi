@@ -1,4 +1,3 @@
-import httpx
 import uvicorn
 from httpx_oauth.integrations.fastapi import OAuth2AuthorizeCallback
 from httpx_oauth.oauth2 import OAuth2
@@ -27,7 +26,7 @@ vk_client = OAuth2(
     "https://oauth.vk.com/access_token",
 )
 
-oauth2_authorize_callback = OAuth2AuthorizeCallback(vk_client, "oauth-callback")
+oauth2_authorize_callback = OAuth2AuthorizeCallback(vk_client, redirect_url="http://localhost:5173/oauth-callback")
 
 
 @app.get("/get_auth_url")
