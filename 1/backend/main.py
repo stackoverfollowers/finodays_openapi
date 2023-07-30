@@ -33,13 +33,13 @@ oauth2_authorize_callback = OAuth2AuthorizeCallback(vk_client, "oauth-callback")
 @app.get("/get_auth_url")
 async def get_auth_url_route() -> dict:
     authorization_url = await vk_client.get_authorization_url(
-        "http://localhost:8000/oauth-callback",
+        redirect_uri="http://localhost:5173/oauth-callback",
         scope=["email"],
     )
     return {"result": authorization_url}
 
 
-@app.get("/oauth-callback", name="oauth-callback")
+@app.post("/oauth-callback", name="oauth-callback")
 async def oauth_callback_route(access_token_state=Depends(oauth2_authorize_callback)) -> dict:
     data, _ = access_token_state
     access_token = data["access_token"]
