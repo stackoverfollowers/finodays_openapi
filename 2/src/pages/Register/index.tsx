@@ -1,16 +1,21 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {createUserWithEmailAndPassword} from "firebase/auth";
 import styles from './Register.module.scss'
 import {auth} from "../../main";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
+import {Context} from "../../App";
 
 export function Register() {
+  const {setUser} = useContext(Context)
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const navigate = useNavigate();
 
   const register = async () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      setUser(userCredential);
+      navigate('/');
     } catch (e) {
       console.log(e)
     }
