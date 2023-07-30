@@ -1,13 +1,32 @@
-Использованы библиотеки react, react-router, firebase\
+# Задание 2. Использование API Firebase
+
+Использованы библиотеки `react`, `react-router`, `firebase`.
+
+## Requirements
+
 Установите библиотеки:
 
-``npm install``\
-``pnpm install``\
-``yarn install``
+```bash
+npm install
+```
 
-Добавьте ``.env`` file со следующей структурой:
+или
 
-``
+```bash
+pnpm install
+```
+
+или
+
+```bash
+yarn install
+```
+
+## Environments
+
+Добавьте `.env` file со следующей структурой:
+
+```bash
 VITE_apiKey="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 VITE_authDomain="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 VITE_projectId="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -15,13 +34,24 @@ VITE_storageBucket="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 VITE_messagingSenderId="XXXXXXXXXXXXXXXXXXXXXXXXXXX"
 VITE_appId="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 VITE_measurementId="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-``
+```
+
+## Run app
 
 Запуск:
 
-``npm run dev``
-или
-``pnpm run dev``
-или
-``yarn run dev``
+```bash
+npm run dev
+```
 
+или
+
+```bash
+pnpm run dev
+```
+
+или
+
+```bash
+yarn run dev
+```
