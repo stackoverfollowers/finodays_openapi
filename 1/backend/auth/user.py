@@ -17,11 +17,13 @@ def decode_and_validate_token(token: str) -> str:
 def ensure_user_in_db(
     user_id: int, access_token: str, full_name: str, email: str, expires_at: str
 ) -> None:
-    if (user := fake_db.get(user_id)) is not None:
+    user = fake_db.get(user_id)
+    if user is not None:
         if user["access_token"] != access_token:
             user["access_token"] = access_token
             user["expires_at"] = expires_at
         return
+
     fake_db[user_id] = {
         "access_token": access_token,
         "email": email,
