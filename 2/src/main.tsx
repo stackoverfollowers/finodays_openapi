@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "@firebase/firestore"
+import {getAuth} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_apiKey,
@@ -16,7 +16,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const firestore = getFirestore(app);
+export const auth = getAuth(app);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
