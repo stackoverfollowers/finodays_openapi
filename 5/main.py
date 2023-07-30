@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from json2xml import json2xml
 
 APP_PORT = 8001
@@ -12,7 +12,9 @@ def get_application():
     def transfer_json_to_xml(data: dict) -> str:
         if not data:
             return '<?xml version="1.0" ?><metadata></metadata>'
-        return json2xml.Json2xml(data).to_xml()
+        content = json2xml.Json2xml(data).to_xml()
+        return Response(content=content, media_type="application/xml")
+
 
     return app
 
