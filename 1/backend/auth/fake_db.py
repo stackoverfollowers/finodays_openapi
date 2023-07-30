@@ -1,5 +1,3 @@
-
-
 fake_db = {
     "user_id": {
         "access_token": "token",

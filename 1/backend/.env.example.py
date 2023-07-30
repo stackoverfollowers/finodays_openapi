@@ -1,2 +1,2 @@
-VK_APP_ID=123
-VK_APP_SECRET=secret
+VK_APP_ID = 123
+VK_APP_SECRET = secret
