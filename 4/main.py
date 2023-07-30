@@ -1,10 +1,12 @@
-import csv
-import datetime
-import json
 import logging
 import os
-from typing import Any
-from urllib.request import urlopen, Request
+import json
+
+from google_api_service_helper import GoogleSpreadsheet
+
+SPREADSHEET_ID = os.environ.get("GOOGLE_SPREADSHEET_ID")
+CREDENTIAL_PATH = os.environ.get("CREDENTIAL_PATH", './credentials.json')
+SHEET = "Stats"
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - [%(levelname)s] - %(message)s"
@@ -12,55 +14,50 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-API_KEY = os.environ.get("GOOGLE_API_KEY")
-SPREADSHEET_ID = os.environ.get("GOOGLE_SPREADSHEET_ID")
 
 
-def make_get_request(url: str) -> Any:
-    with urlopen(Request(url)) as response:
-        status_code = response.getcode()
-        data = json.loads(response.read().decode("utf-8"))
-        if status_code >= 300:
-            raise ValueError(data)
-        return data
-
-
-def get_spreadsheet_info(key_id: str, spreadsheet_id: str) -> dict[str, Any]:
-    url = (
-        f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/?key={key_id}"
-    )
-    return make_get_request(url)
-
-
-def get_spreadsheet_data(
-    key_id: str, spreadsheet_id: str, range: str
-) -> list[list[str]]:
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}/values:batchGet?ranges={range}&key={key_id}"
-    return make_get_request(url)
+def get_credentials() -> dict[str, str]:
+    if not os.path.exists('credentials.json'):
+        raise ValueError(f'Credential file is not exist. Create on path `{CREDENTIAL_PATH}')
+    
+    with open(CREDENTIAL_PATH) as f:
+        return json.load(f)
 
 
 def main():
-    if API_KEY is None or SPREADSHEET_ID is None:
-        raise EnvironmentError(
-            "`GOOGLE_API_KEY` or `GOOGLE_SPREADSHEET_ID` is empty"
-            "Rerun after setup env variables"
-        )
-    spreadsheet_info = get_spreadsheet_info(
-        key_id=API_KEY, spreadsheet_id=SPREADSHEET_ID
-    )
-    title = spreadsheet_info["properties"]["title"]
-    logger.info("Got spreadsheet with %d sheets", len(spreadsheet_info["sheets"]))
-    for sheet_data in spreadsheet_info["sheets"]:
-        sheet = sheet_data["properties"]["title"]
-        data = get_spreadsheet_data(
-            key_id=API_KEY, spreadsheet_id=SPREADSHEET_ID, range=sheet
-        )["valueRanges"][0]["values"]
-        logger.info("Loaded `%s` sheet", sheet)
-        now = datetime.datetime.now().strftime("%d-%m-%Y_%H%M%S")
-        with open(f"{now}_{title}_{sheet}.csv", "w+") as file:
-            writer = csv.writer(file)
-            writer.writerows(data)
-        logger.info("Saved  `%s` sheet", sheet)
+    gs = GoogleSpreadsheet(google_keys=get_credentials())
+    try:
+        data = gs.get_data(ss_id=SPREADSHEET_ID, range_sheet="Stats")
+    except Exception:
+        raise ValueError('Check spreadsheet ID and permissions of credential key')
+    column = [
+        '01.06.2023',
+        '22,3',
+        '0',
+        '-0,7',
+        '0',
+        '73,1',
+        '19,7',
+        '10,6',
+        '81,3',
+    ]
+    for i in range(1,len(column)+1):
+        data[i].append(column[i-1])
+    data[0].insert(3,"")
+    column = [
+        '01.06.2023',
+        '353',
+        '0',
+        '6',
+        '-10',
+        '218',
+        '132',
+        '8'
+    ]
+    for i in range(1,len(column)+1):
+        data[i].insert(3, column[i-1])
+    gs.set_data(ss_id=SPREADSHEET_ID, range_sheet="Stats",values=data, major_dimension="ROWS")
+    logger.info('Done')
 
 
 if __name__ == "__main__":
